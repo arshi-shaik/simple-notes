@@ -1,6 +1,7 @@
 const notesList = document.getElementById('notes-list');
 const noteInput = document.getElementById('note-input');
 const addBtn = document.getElementById('add-btn');
+const alarmAudio = document.getElementById('alarm-audio'); // Reference to beep sound
 
 function addNote(text) {
   const li = document.createElement('li');
@@ -20,6 +21,7 @@ function addNote(text) {
     if (sec && !isNaN(sec)) {
       setTimeout(() => {
         alert('Alarm for: ' + text);
+        alarmAudio.play(); // Plays beep/ring sound
       }, sec * 1000);
     }
   };
