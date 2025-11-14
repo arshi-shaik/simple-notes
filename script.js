@@ -14,29 +14,40 @@ function addNote(text) {
   };
   li.appendChild(deleteBtn);
 
+  // State to control alarm loop for this note
+  let alarmInterval = null;
+
   const alarmBtn = document.createElement('button');
   alarmBtn.textContent = 'Alarm';
   alarmBtn.onclick = function() {
     const sec = prompt('Set alarm (seconds from now):');
     if (sec && !isNaN(sec)) {
       setTimeout(() => {
-        let ringDuration = 5000; // 5 seconds
-        alarmAudio.play();
-        let ringTimeout = setTimeout(() => {
-          alarmAudio.pause();
-          alarmAudio.currentTime = 0; // Reset audio
-        }, ringDuration);
+        // Loop alarm
+        alarmInterval = setInterval(() => {
+          alarmAudio.currentTime = 0;
+          alarmAudio.play();
+        }, 1200); // Play again when short beep completes (1.2 seconds typical)
 
         alert('Alarm for: ' + text);
-
-        // Stop sound if user closes alert early
-        alarmAudio.onended = function() {
-          clearTimeout(ringTimeout);
-        };
+        // Suggest user to press 'Stop Alarm' to stop the sound!
       }, sec * 1000);
     }
   };
   li.appendChild(alarmBtn);
+
+  // Stop alarm button
+  const stopBtn = document.createElement('button');
+  stopBtn.textContent = 'Stop Alarm';
+  stopBtn.onclick = function() {
+    if (alarmInterval) {
+      clearInterval(alarmInterval);
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      alarmInterval = null;
+    }
+  };
+  li.appendChild(stopBtn);
 
   notesList.appendChild(li);
 }
@@ -48,4 +59,3 @@ addBtn.onclick = function() {
     noteInput.value = '';
   }
 };
-
