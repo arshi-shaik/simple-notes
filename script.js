@@ -1,7 +1,7 @@
 const notesList = document.getElementById('notes-list');
 const noteInput = document.getElementById('note-input');
 const addBtn = document.getElementById('add-btn');
-const alarmAudio = document.getElementById('alarm-audio'); // Reference to beep sound
+const alarmAudio = document.getElementById('alarm-audio');
 
 function addNote(text) {
   const li = document.createElement('li');
@@ -20,8 +20,19 @@ function addNote(text) {
     const sec = prompt('Set alarm (seconds from now):');
     if (sec && !isNaN(sec)) {
       setTimeout(() => {
+        let ringDuration = 5000; // 5 seconds
+        alarmAudio.play();
+        let ringTimeout = setTimeout(() => {
+          alarmAudio.pause();
+          alarmAudio.currentTime = 0; // Reset audio
+        }, ringDuration);
+
         alert('Alarm for: ' + text);
-        alarmAudio.play(); // Plays beep/ring sound
+
+        // Stop sound if user closes alert early
+        alarmAudio.onended = function() {
+          clearTimeout(ringTimeout);
+        };
       }, sec * 1000);
     }
   };
@@ -37,3 +48,4 @@ addBtn.onclick = function() {
     noteInput.value = '';
   }
 };
+
